@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="View.MyViewController"
+      alignment="CENTER" spacing="15" prefWidth="300" prefHeight="200">
+
+    <Label text="Welcome to Part C"/>
+    <Button text="Click Me" onAction="#onButtonClicked"/>
+</VBox>
