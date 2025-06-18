@@ -1,7 +1,6 @@
-/* קובץ CSS לעיצוב משחק המבוך */
+/* CSS file for maze game styling */
 
-/* עיצוב הכפתורים */
-.game-button {
+/* Button styling */
     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
     -fx-background-radius: 10px;
     -fx-text-fill: white;
@@ -17,7 +16,7 @@
     -fx-scale-y: 1.05;
 }
 
-/* עיצוב התפריט */
+/* Menu bar styling */
 .menu-bar {
     -fx-background-color: #34495e;
 }
@@ -35,19 +34,19 @@
     -fx-background-color: #2c3e50;
 }
 
-/* עיצוב הקנבס */
+/* Canvas styling */
 .maze-canvas {
     -fx-border-color: #2c3e50;
     -fx-border-width: 2px;
     -fx-background-color: white;
 }
 
-/* עיצוב הרקע */
+/* Background styling */
 .root {
     -fx-background-color: linear-gradient(to bottom, #bdc3c7, #2c3e50);
 }
 
-/* עיצוב תוויות */
+/* Label styling */
 .instructions-label {
     -fx-text-fill: #2c3e50;
     -fx-font-weight: bold;

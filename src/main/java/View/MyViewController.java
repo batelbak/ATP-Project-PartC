@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import algorithms.search.AState;
+import ViewModel.MyViewModel;
 
 import java.io.File;
 import java.util.List;
@@ -22,6 +23,7 @@ public class MyViewController implements IView {
 
     // Reference to the main application stage
     private Stage primaryStage;
+    private MyViewModel viewModel;
 
     @FXML
     public void onButtonClicked(ActionEvent event) {
@@ -100,4 +102,9 @@ public class MyViewController implements IView {
         File file = fileChooser.showOpenDialog(primaryStage);
         return file != null ? file.getAbsolutePath() : null;
     }
+
+    public void setViewModel(MyViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
 }
