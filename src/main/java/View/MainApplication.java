@@ -20,7 +20,7 @@ public class MainApplication extends Application {
         mainStage = stage;
 
         // Load FXML using class-based loader since file is inside package View
-        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(MyViewController.class.getResource("MyView.fxml")));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
         Parent root = loader.load();
 
         // Connect controller
