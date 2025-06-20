@@ -19,25 +19,17 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws Exception {
         mainStage = stage;
 
-        // Load FXML using class-based loader since file is inside package View
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
-        Parent root = loader.load();
+        // ========== טען את מסך הפתיחה ==========
+        FXMLLoader introLoader = new FXMLLoader(getClass().getResource("/View/maze_intro_screen.fxml"));
+        Parent introRoot = introLoader.load();
 
-        // Connect controller
-        MyViewController controller = loader.getController();
+        // ========== טען את קובץ העיצוב ==========
+        introRoot.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/View/IntroStyle.css")).toExternalForm());
 
-        // Connect Model and ViewModel
-        IModel model = new MyModel();
-        MyViewModel viewModel = new MyViewModel(model);
-        controller.setViewModel(viewModel);
-        controller.setPrimaryStage(stage); // in case of FileChoosers etc.
-
-        // Load CSS
-        root.getStylesheets().add(Objects.requireNonNull(MyViewController.class.getResource("MainStyle.css")).toExternalForm());
-
-        // Show stage
-        stage.setTitle("Maze Application - Part C");
-        stage.setScene(new Scene(root, 800, 600));
+        // ========== הצג את חלון הפתיחה ==========
+        Scene introScene = new Scene(introRoot, 1000, 700);
+        stage.setTitle("Maze Application - Welcome");
+        stage.setScene(introScene);
         stage.show();
     }
 

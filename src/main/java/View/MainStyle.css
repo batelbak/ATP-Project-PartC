@@ -1,24 +1,31 @@
-/* MainStyle.css */
+/* MainStyle.css - Modern Maze Game Styling */
 
+/* Root styling */
 .root {
-    -fx-font-family: 'Arial';
-    -fx-font-size: 16px;
-    -fx-background-color: #f0f8ff;
-}
-
-.label {
-    -fx-text-fill: #333333;
-    -fx-font-weight: bold;
-}
-
-.button {
-    -fx-background-color: #6ca0dc;
-    -fx-text-fill: white;
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
     -fx-font-size: 14px;
-    -fx-cursor: hand;
-    -fx-background-radius: 6;
+    -fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef);
 }
 
-.button:hover {
-    -fx-background-color: #5b8bd5;
+/* Menu Bar Styling */
+.menu-bar {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f1f3f4);
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: #495057;
+    -fx-font-weight: 500;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: #e9ecef;
+}
+
+/* Toolbar Styling */
+.tool-bar {
+    -fx-background-color: #f1f3f4;
+    -fx-spacing: 8px;
+    -fx-padding: 5px;
 }

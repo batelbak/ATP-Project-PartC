@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane fx:id="introPane" fx:controller="View.GameIntroController"
+            prefWidth="1000.0" prefHeight="700.0"
+            stylesheets="@IntroStyle.css"
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1">
+    <children>
+        <!-- Title -->
+        <Label fx:id="mainTitle" layoutX="150.0" layoutY="120.0" prefWidth="700.0"
+               text="Step into the unknown...&#10;The Maze begins now!"
+               wrapText="true" textAlignment="CENTER" alignment="CENTER">
+            <font>
+                <Font name="Georgia" size="34.0"/>
+            </font>
+            <effect>
+                <DropShadow radius="4.0" offsetX="2.0" offsetY="2.0" color="black"/>
+            </effect>
+            <textFill>
+                <RadialGradient centerX="0.5" centerY="0.5" radius="0.7" proportional="true">
+                    <stops>
+                        <Stop offset="0.0" color="#fffcc9"/>
+                        <Stop offset="1.0" color="#e68a00"/>
+                    </stops>
+                </RadialGradient>
+            </textFill>
+        </Label>
+
+        <!-- Input fields -->
+        <VBox layoutX="400.0" layoutY="300.0" spacing="20.0">
+            <children>
+                <HBox spacing="10.0">
+                    <Label text="Height:" styleClass="input-label"/>
+                    <TextField fx:id="textField_mazeRows" promptText="e.g. 25"/>
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="Width:" styleClass="input-label"/>
+                    <TextField fx:id="textField_mazeColumns" promptText="e.g. 25"/>
+                </HBox>
+            </children>
+        </VBox>
+
+        <!-- Start button -->
+        <Button fx:id="startButton" layoutX="450.0" layoutY="420.0" text="Start"
+                styleClass="start-button" onAction="#startGame">
+            <font>
+                <Font size="22.0"/>
+            </font>
+        </Button>
+
+        <!-- Show Solution checkbox -->
+        <CheckBox fx:id="solutionCheckBox" layoutX="460.0" layoutY="470.0" text="Show Solution"
+                  selected="true" styleClass="checkbox-label"/>
+    </children>
+</AnchorPane>
