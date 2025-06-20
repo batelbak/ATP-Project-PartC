@@ -50,6 +50,8 @@ public class MazeDisplayer extends Canvas {
     public MazeDisplayer() {
         super();
         this.setFocusTraversable(true);
+        GraphicsContext gc = getGraphicsContext2D();
+        gc.setFill(Color.TRANSPARENT);
         initialize();
         loadImages();
     }
@@ -136,6 +138,13 @@ public class MazeDisplayer extends Canvas {
 
         this.setWidth(canvasWidth);
         this.setHeight(canvasHeight);
+
+        if (parentPane != null) {
+            double centerX = (parentPane.getWidth() - canvasWidth) / 2;
+            double centerY = (parentPane.getHeight() - canvasHeight) / 2;
+            this.setLayoutX(centerX);
+            this.setLayoutY(centerY);
+        }
     }
 
     public void updateCharacterPosition(int row, int col) {
@@ -264,20 +273,24 @@ public class MazeDisplayer extends Canvas {
     private void drawCell(GraphicsContext gc, int row, int col, double x, double y,
                           double cellWidth, double cellHeight) {
         if (maze[row][col] == 1) {
-            if (wallImage != null) {
-                gc.drawImage(wallImage, x, y, cellWidth, cellHeight);
-            } else {
-                gc.setFill(Color.BLACK);
-                gc.fillRect(x, y, cellWidth, cellHeight);
-            }
-        } else {
-            gc.setFill(Color.WHITE);
+            // קיר - שחור עם מתאר כתום
+            gc.setFill(Color.BLACK);
             gc.fillRect(x, y, cellWidth, cellHeight);
-        }
 
-        gc.setStroke(Color.LIGHTGRAY);
-        gc.setLineWidth(0.5);
-        gc.strokeRect(x, y, cellWidth, cellHeight);
+            gc.setStroke(Color.web("#FF4500"));
+            gc.setLineWidth(1.5);
+            gc.strokeRect(x, y, cellWidth, cellHeight);
+
+        } else {
+            // תא ריק - אדום שקוף כמו בתמונה הימנית
+            gc.setFill(Color.web("#CC0000", 0.4)); // אדום עם שקיפות 40%
+            gc.fillRect(x, y, cellWidth, cellHeight);
+
+            // מתאר כתום דק
+            gc.setStroke(Color.web("#FF4500"));
+            gc.setLineWidth(0.5);
+            gc.strokeRect(x, y, cellWidth, cellHeight);
+        }
     }
 
     private void drawSolutionPath(GraphicsContext gc, double cellWidth, double cellHeight) {

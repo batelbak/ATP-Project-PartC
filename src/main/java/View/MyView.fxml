@@ -5,11 +5,13 @@
 <?import javafx.scene.text.Font?>
 <?import View.MazeDisplayer?>
 
-<AnchorPane fx:controller="View.MyViewController"
+<AnchorPane fx:id="mainPane"
+            fx:controller="View.MyViewController"
             xmlns:fx="http://javafx.com/fxml"
             xmlns="http://javafx.com/javafx"
             prefWidth="1000.0" prefHeight="800.0"
             stylesheets="@MainStyle.css">
+
 
     <children>
         <!-- Top Menu Bar -->
@@ -41,11 +43,14 @@
 
         <!-- Center Maze Display -->
         <ScrollPane fx:id="mazeScrollPane"
-                    fitToWidth="true" fitToHeight="true"
+                    fitToWidth="false" fitToHeight="false"
                     AnchorPane.topAnchor="60.0"
                     AnchorPane.bottomAnchor="60.0"
                     AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0">
+                    AnchorPane.rightAnchor="0.0"
+                    style="-fx-background: transparent;"
+                    hbarPolicy="AS_NEEDED"
+                    vbarPolicy="AS_NEEDED">
             <MazeDisplayer fx:id="mazeDisplayer" />
         </ScrollPane>
 
