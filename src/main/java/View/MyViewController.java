@@ -31,6 +31,7 @@ public class MyViewController implements IView, Initializable {
     @FXML private Button generateMazeButton;
     @FXML private Button solveMazeButton;
     @FXML private Label statusLabel;
+    @FXML private CheckBox showSolutionCheckBox; // הוספתי את זה
     @FXML private MenuItem saveMazeMenuItem;
     @FXML private MenuItem loadMazeMenuItem;
     @FXML private MenuItem newMazeMenuItem;
@@ -269,13 +270,47 @@ public class MyViewController implements IView, Initializable {
                 viewModel.solveMaze();
                 List<AState> solution = viewModel.getSolution();
                 if (solution != null && !solution.isEmpty()) {
-                    displaySolution(solution);
-                    statusLabel.setText("Solution displayed! " + solution.size() + " steps.");
+                    // רק שומר את הפתרון, לא מציג אותו אוטומטית
+                    statusLabel.setText("Solution found! " + solution.size() + " steps. Check the box to show it.");
                 } else {
                     showAlert("No solution found for this maze!");
                 }
             } catch (Exception e) {
                 showAlert("Error solving maze: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void onToggleSolutionDisplay(ActionEvent event) {
+        CheckBox checkBox = (CheckBox) event.getSource();
+        boolean show = checkBox.isSelected();
+
+        if (viewModel != null && mazeGenerated) {
+            List<AState> solution = viewModel.getSolution();
+            if (solution != null && !solution.isEmpty()) {
+                if (show) {
+                    // הוסף הדפסה לבדיקה
+                    System.out.println("Solution path size: " + solution.size());
+                    for (int i = 0; i < solution.size(); i++) {
+                        try {
+                            algorithms.mazeGenerators.Position pos =
+                                    (algorithms.mazeGenerators.Position) solution.get(i).getClass().getMethod("getPosition").invoke(solution.get(i));
+                            System.out.println("Step " + i + ": (" + pos.getRowIndex() + ", " + pos.getColumnIndex() + ")");
+                        } catch (Exception e) {
+                            System.out.println("Error reading position for step " + i);
+                        }
+                    }
+
+                    mazeDisplayer.displaySolutionPath(solution);
+                    statusLabel.setText("Solution displayed (" + solution.size() + " steps)");
+                } else {
+                    mazeDisplayer.clearSolutionPath();
+                    statusLabel.setText("Solution hidden");
+                }
+            } else {
+                showAlert("No solution found yet. Press 'Solve' first.");
+                checkBox.setSelected(false);
             }
         }
     }
@@ -391,32 +426,29 @@ public class MyViewController implements IView, Initializable {
     @Override
     public void displayMaze(int[][] maze) {
         this.currentMaze = maze;
-        this.mazeGenerated = true; // Set maze as generated when displaying
+        this.mazeGenerated = true;
 
         if (mazeDisplayer != null) {
             mazeDisplayer.displayMaze(maze);
 
-            // Reset character position
-            characterPosition[0] = 0;
-            characterPosition[1] = 0;
-            mazeDisplayer.updateCharacterPosition(0, 0);
+            // במקום להגדיר קשיח (0,0), קבל מה-ViewModel:
+            characterPosition[0] = viewModel.playerRowProperty().get();
+            characterPosition[1] = viewModel.playerColProperty().get();
+            mazeDisplayer.updateCharacterPosition(characterPosition[0], characterPosition[1]);
 
-            // Update goal position
-            if (viewModel != null) {
-                goalRow = maze.length - 1;
-                goalCol = maze[0].length - 1;
-                mazeDisplayer.setGoalPosition(goalRow, goalCol);
-            }
+            // המטרה - צריך להוסיף property ל-ViewModel
+            // או לבדוק במבוך עצמו איפה המטרה
+            goalRow = maze.length - 1;  // זה זמני
+            goalCol = maze[0].length - 1;  // זה זמני
+            mazeDisplayer.setGoalPosition(goalRow, goalCol);
 
             Platform.runLater(() -> {
                 mazeDisplayer.setFocusTraversable(true);
                 mazeDisplayer.requestFocus();
                 setupKeyboardHandling();
-                System.out.println("Maze displayed and focus set");
             });
         }
-
-        updateControlsState(); // Update button states
+        updateControlsState();
     }
 
     @Override
@@ -433,7 +465,6 @@ public class MyViewController implements IView, Initializable {
         if (mazeDisplayer != null && solutionPath != null) {
             // Pass the solution directly to the displayer
             mazeDisplayer.displaySolutionPath(solutionPath);
-            showAlert("Solution found with " + solutionPath.size() + " steps!");
         }
     }
 

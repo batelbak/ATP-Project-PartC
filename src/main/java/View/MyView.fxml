@@ -12,9 +12,8 @@
             prefWidth="1000.0" prefHeight="800.0"
             stylesheets="@MainStyle.css">
 
-
     <children>
-        <!-- Top Menu Bar -->
+        <!-- Top Menu and Toolbar -->
         <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <MenuBar>
                 <Menu text="File">
@@ -41,13 +40,13 @@
             </ToolBar>
         </VBox>
 
-        <!-- Center Maze Display -->
+        <!-- Maze Display Area -->
         <ScrollPane fx:id="mazeScrollPane"
                     fitToWidth="false" fitToHeight="false"
-                    AnchorPane.topAnchor="60.0"
-                    AnchorPane.bottomAnchor="60.0"
-                    AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="100.0"
+                    AnchorPane.bottomAnchor="80.0"
+                    AnchorPane.leftAnchor="50.0"
+                    AnchorPane.rightAnchor="50.0"
                     style="-fx-background: transparent;"
                     hbarPolicy="AS_NEEDED"
                     vbarPolicy="AS_NEEDED">
@@ -57,10 +56,10 @@
         <!-- Bottom Bar -->
         <HBox spacing="15" alignment="CENTER_LEFT"
               AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
-            <CheckBox text="Show Solution" onAction="#onSolveMaze" />
+            <!-- CheckBox שרק מציג/מסתיר פתרון קיים -->
+            <CheckBox text="Show Solution" fx:id="showSolutionCheckBox" onAction="#onToggleSolutionDisplay" />
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="statusLabel" text="Ready to begin..." />
         </HBox>
-
     </children>
 </AnchorPane>

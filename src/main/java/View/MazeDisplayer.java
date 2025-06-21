@@ -14,15 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enhanced MazeDisplayer with images, zoom, and solution display
+ * MazeDisplayer with full support for rendering maze, player, goal,
+ * zooming, keyboard navigation, and optional solution display.
  */
 public class MazeDisplayer extends Canvas {
 
+    // Maze data and player/goal positions
     private int[][] maze;
     private int[] characterPosition = {0, 0};
     private int[] goalPosition = {0, 0};
 
-    // Display properties
+    // Cell size and zoom configuration
     private double cellWidth = 20.0;
     private double cellHeight = 20.0;
     private double zoomFactor = 1.0;
@@ -35,16 +37,14 @@ public class MazeDisplayer extends Canvas {
     private ArrayList<AState> solutionPath;
     private boolean showSolution = false;
 
-    // Images
+    // Images for game elements
     private Image heroImage;
     private Image wallImage;
     private Image goalImage;
     private Image solutionImage;
 
-    // Parent container
+    // Parent layout and callback for win
     private AnchorPane parentPane;
-
-    // Win callback
     private Runnable onWinCallback;
 
     public MazeDisplayer() {
@@ -56,14 +56,11 @@ public class MazeDisplayer extends Canvas {
         loadImages();
     }
 
+    // Set up listeners and controls
     private void initialize() {
-        // Set up zoom functionality
         this.setOnScroll(this::handleZoomScroll);
-
-        // Keyboard listener
         this.setOnKeyPressed(this::handleKeyPress);
 
-        // Listen to parent size changes
         parentProperty().addListener((obs, oldParent, newParent) -> {
             if (newParent instanceof AnchorPane) {
                 this.parentPane = (AnchorPane) newParent;
@@ -72,6 +69,12 @@ public class MazeDisplayer extends Canvas {
         });
     }
 
+    public void clearSolutionPath() {
+        this.solutionPath = null;
+        this.showSolution = false;  // חשוב מאוד!
+        redraw();
+    }
+    // Rescale canvas when parent size changes
     private void setupParentListeners() {
         if (parentPane != null) {
             parentPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
@@ -90,6 +93,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Load images from resources
     private void loadImages() {
         try {
             heroImage = loadImageSafely("/images/hero.png");
@@ -101,6 +105,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Try to load image or return null
     private Image loadImageSafely(String path) {
         try {
             return new Image(getClass().getResourceAsStream(path));
@@ -109,6 +114,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Set maze and prepare display
     public void displayMaze(int[][] maze) {
         this.maze = maze;
         this.showSolution = false;
@@ -120,6 +126,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Recalculate canvas size based on parent
     private void updateCanvasSize() {
         if (maze == null) return;
 
@@ -139,6 +146,7 @@ public class MazeDisplayer extends Canvas {
         this.setWidth(canvasWidth);
         this.setHeight(canvasHeight);
 
+        // Center canvas
         if (parentPane != null) {
             double centerX = (parentPane.getWidth() - canvasWidth) / 2;
             double centerY = (parentPane.getHeight() - canvasHeight) / 2;
@@ -147,6 +155,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Move player
     public void updateCharacterPosition(int row, int col) {
         this.characterPosition[0] = row;
         this.characterPosition[1] = col;
@@ -154,6 +163,7 @@ public class MazeDisplayer extends Canvas {
         redraw();
     }
 
+    // Win condition check
     private void checkWinCondition() {
         if (characterPosition[0] == goalPosition[0] && characterPosition[1] == goalPosition[1]) {
             if (onWinCallback != null) {
@@ -172,6 +182,7 @@ public class MazeDisplayer extends Canvas {
         redraw();
     }
 
+    // Accept and display solution
     public void displaySolution(Solution solution) {
         this.solution = solution;
         if (solution != null) {
@@ -194,6 +205,7 @@ public class MazeDisplayer extends Canvas {
         redraw();
     }
 
+    // Handle zoom via Ctrl + mouse wheel
     private void handleZoomScroll(ScrollEvent event) {
         if (event.isControlDown() && maze != null) {
             double oldZoom = zoomFactor;
@@ -212,27 +224,28 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Handle keyboard movement
     private void handleKeyPress(KeyEvent event) {
         if (maze == null) return;
 
         int row = characterPosition[0];
         int col = characterPosition[1];
-
         int newRow = row, newCol = col;
 
         KeyCode code = event.getCode();
         switch (code) {
-            case NUMPAD8: newRow = row - 1; break; // Up
-            case NUMPAD2: newRow = row + 1; break; // Down
-            case NUMPAD4: newCol = col - 1; break; // Left
-            case NUMPAD6: newCol = col + 1; break; // Right
-            case NUMPAD7: newRow = row - 1; newCol = col - 1; break; // Up-Left
-            case NUMPAD9: newRow = row - 1; newCol = col + 1; break; // Up-Right
-            case NUMPAD1: newRow = row + 1; newCol = col - 1; break; // Down-Left
-            case NUMPAD3: newRow = row + 1; newCol = col + 1; break; // Down-Right
+            case NUMPAD8: newRow = row - 1; break;
+            case NUMPAD2: newRow = row + 1; break;
+            case NUMPAD4: newCol = col - 1; break;
+            case NUMPAD6: newCol = col + 1; break;
+            case NUMPAD7: newRow = row - 1; newCol = col - 1; break;
+            case NUMPAD9: newRow = row - 1; newCol = col + 1; break;
+            case NUMPAD1: newRow = row + 1; newCol = col - 1; break;
+            case NUMPAD3: newRow = row + 1; newCol = col + 1; break;
             default: return;
         }
 
+        // Check movement legality
         if (newRow >= 0 && newRow < maze.length && newCol >= 0 && newCol < maze[0].length && maze[newRow][newCol] == 0) {
             updateCharacterPosition(newRow, newCol);
         }
@@ -240,6 +253,7 @@ public class MazeDisplayer extends Canvas {
         event.consume();
     }
 
+    // Main drawing logic
     private void redraw() {
         if (maze == null) return;
 
@@ -252,6 +266,7 @@ public class MazeDisplayer extends Canvas {
         double zoomedCellWidth = cellWidth / zoomFactor;
         double zoomedCellHeight = cellHeight / zoomFactor;
 
+        // Draw maze cells
         for (int row = 0; row < maze.length; row++) {
             for (int col = 0; col < maze[row].length; col++) {
                 double x = col * zoomedCellWidth;
@@ -260,6 +275,7 @@ public class MazeDisplayer extends Canvas {
             }
         }
 
+        // Draw path if visible
         if (showSolution && solutionPath != null) {
             drawSolutionPath(gc, zoomedCellWidth, zoomedCellHeight);
         }
@@ -270,59 +286,76 @@ public class MazeDisplayer extends Canvas {
         gc.restore();
     }
 
-    private void drawCell(GraphicsContext gc, int row, int col, double x, double y,
-                          double cellWidth, double cellHeight) {
+    // Draw single maze cell
+    private void drawCell(GraphicsContext gc, int row, int col, double x, double y, double cellWidth, double cellHeight) {
         if (maze[row][col] == 1) {
-            // קיר - שחור עם מתאר כתום
             gc.setFill(Color.BLACK);
             gc.fillRect(x, y, cellWidth, cellHeight);
-
             gc.setStroke(Color.web("#FF4500"));
             gc.setLineWidth(1.5);
             gc.strokeRect(x, y, cellWidth, cellHeight);
-
         } else {
-            // תא ריק - אדום שקוף כמו בתמונה הימנית
-            gc.setFill(Color.web("#CC0000", 0.4)); // אדום עם שקיפות 40%
+            gc.setFill(Color.web("#CC0000", 0.4));
             gc.fillRect(x, y, cellWidth, cellHeight);
-
-            // מתאר כתום דק
             gc.setStroke(Color.web("#FF4500"));
             gc.setLineWidth(0.5);
             gc.strokeRect(x, y, cellWidth, cellHeight);
         }
     }
 
+    // Draw solution path as yellow dots or image
+    // Draw solution path as yellow dots or image
+    // Draw solution path as yellow dots or image
     private void drawSolutionPath(GraphicsContext gc, double cellWidth, double cellHeight) {
-        gc.setFill(Color.YELLOW.deriveColor(0, 1, 1, 0.6));
+        gc.setFill(Color.YELLOW.deriveColor(0, 1, 1, 0.8));
 
-        for (AState state : solutionPath) {
+        for (int i = 0; i < solutionPath.size(); i++) {
+            AState state = solutionPath.get(i);
+            if (state == null) continue;
+
             try {
-                String[] parts = state.toString().replace("{", "").replace("}", "").split(",");
-                int row = Integer.parseInt(parts[0].trim());
-                int col = Integer.parseInt(parts[1].trim());
+                // נניח ש-AState הוא MazeState עם פונקציה getPosition()
+                algorithms.mazeGenerators.Position pos =
+                        (algorithms.mazeGenerators.Position) state.getClass().getMethod("getPosition").invoke(state);
 
-                if (row != characterPosition[0] || col != characterPosition[1]) {
-                    double x = col * cellWidth;
-                    double y = row * cellHeight;
+                int row = pos.getRowIndex();
+                int col = pos.getColumnIndex();
 
-                    if (solutionImage != null) {
-                        gc.drawImage(solutionImage, x, y, cellWidth, cellHeight);
-                    } else {
-                        gc.fillOval(x + cellWidth * 0.2, y + cellHeight * 0.2,
-                                cellWidth * 0.6, cellHeight * 0.6);
+                // בדיקה שהמיקום חוקי ולא על קיר
+                if (row >= 0 && row < maze.length && col >= 0 && col < maze[0].length && maze[row][col] == 0) {
+
+                    // אל תציג כדור על נקודת ההתחלה (הדמות האדומה)
+                    boolean isStartPosition = (row == characterPosition[0] && col == characterPosition[1]);
+
+                    // אל תציג כדור על נקודת המטרה (המטרה הירוקה)
+                    boolean isGoalPosition = (row == goalPosition[0] && col == goalPosition[1]);
+
+                    // צייר רק אם זה לא נקודת התחלה ולא מטרה
+                    if (!isStartPosition && !isGoalPosition) {
+                        double x = col * cellWidth;
+                        double y = row * cellHeight;
+
+                        if (solutionImage != null) {
+                            gc.drawImage(solutionImage, x, y, cellWidth, cellHeight);
+                        } else {
+                            // צייר כדור צהוב קטן יותר
+                            gc.fillOval(x + cellWidth * 0.25, y + cellHeight * 0.25, cellWidth * 0.5, cellHeight * 0.5);
+                        }
                     }
                 }
+
             } catch (Exception e) {
-                // skip
+                System.err.println("Error in drawSolutionPath: " + e.getMessage());
             }
         }
     }
 
+
+
+    // Draw goal cell
     private void drawGoal(GraphicsContext gc, double cellWidth, double cellHeight) {
         double x = goalPosition[1] * cellWidth;
         double y = goalPosition[0] * cellHeight;
-
         if (goalImage != null) {
             gc.drawImage(goalImage, x, y, cellWidth, cellHeight);
         } else {
@@ -333,10 +366,10 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Draw character
     private void drawCharacter(GraphicsContext gc, double cellWidth, double cellHeight) {
         double x = characterPosition[1] * cellWidth;
         double y = characterPosition[0] * cellHeight;
-
         if (heroImage != null) {
             gc.drawImage(heroImage, x, y, cellWidth, cellHeight);
         } else {
@@ -345,6 +378,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    // Public getters
     public double getCellWidth() { return cellWidth; }
     public double getCellHeight() { return cellHeight; }
     public double getZoomFactor() { return zoomFactor; }

@@ -1,12 +1,14 @@
-/* MainStyle.css - Modern Maze Game Styling */
+/* MainStyle.css - Enhanced Mystical Maze Styling */
 
 /* Root styling */
 .root {
-    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-family: 'Times New Roman', 'Times New Roman', serif;
+    -fx-font-size: 15px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #d4af37; /* זהב */
 }
 
-/* רקע המסך הראשי */
+/* רקע המשחק */
 #mainPane {
     -fx-background-image: url("/images/MazeBackground2.png");
     -fx-background-size: cover;
@@ -14,82 +16,76 @@
     -fx-background-repeat: no-repeat;
 }
 
-/* ScrollPane שקוף לחלוטין */
+/* ScrollPane שקוף */
 #mazeScrollPane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
-
 #mazeScrollPane .viewport {
     -fx-background-color: transparent;
 }
-
 #mazeScrollPane .scroll-bar {
-    -fx-background-color: rgba(0, 0, 0, 0.3);
+    -fx-background-color: rgba(0, 0, 0, 0.2);
 }
 
 /* Menu Bar Styling */
 .menu-bar {
-    -fx-background-color: rgba(255, 255, 255, 0.9);
-    -fx-border-color: #dee2e6;
+    -fx-background-color: transparent;
     -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
 }
-
 .menu-bar .menu .label {
-    -fx-text-fill: #495057;
-    -fx-font-weight: 500;
+    -fx-text-fill: #d4af37;
+    -fx-font-weight: bold;
 }
-
+.menu-item .label {
+    -fx-text-fill: #d4af37;
+}
 .menu-bar .menu:hover {
-    -fx-background-color: rgba(233, 236, 239, 0.9);
+    -fx-background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Toolbar Styling */
 .tool-bar {
-    -fx-background-color: rgba(241, 243, 244, 0.9);
+    -fx-background-color: transparent;
     -fx-spacing: 8px;
     -fx-padding: 5px;
 }
 
-/* כפתורים */
+/* Buttons */
 .button {
-    -fx-background-color: rgba(255, 255, 255, 0.9);
-    -fx-border-color: #ced4da;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-border-color: #d4af37;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
-    -fx-padding: 6 12;
+    -fx-padding: 6 14;
+    -fx-text-fill: #d4af37;
+    -fx-font-family: 'Times New Roman';
     -fx-font-size: 14px;
-    -fx-text-fill: #495057;
 }
-
 .button:hover {
-    -fx-background-color: rgba(248, 249, 250, 0.9);
+    -fx-background-color: rgba(255, 255, 255, 0.15);
 }
-
 .button:pressed {
-    -fx-background-color: rgba(222, 226, 230, 0.9);
+    -fx-background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Bottom bar styling */
-.check-box {
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
+/* Bottom area */
+.check-box, .check-box .text {
+    -fx-text-fill: #d4af37;
+    -fx-font-family: 'Times New Roman';
+    -fx-font-size: 14px;
 }
 
-.check-box .box {
-    -fx-background-color: rgba(255, 255, 255, 0.8);
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 2px;
-}
-
-/* Status label */
 #statusLabel {
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #d4af37;
     -fx-font-style: italic;
     -fx-font-weight: bold;
+    -fx-font-family: 'Times New Roman';
+    -fx-font-size: 14px;
 }
 
-/* רקע מסך הפתיחה */
+/* מסך פתיחה */
 #introPane {
     -fx-background-image: url("/images/mazeBackground.png");
     -fx-background-size: cover;
@@ -97,48 +93,43 @@
     -fx-background-repeat: no-repeat;
 }
 
-/* כותרת ראשית */
 #mainTitle {
     -fx-font-family: "Times New Roman";
     -fx-font-size: 38px;
-    -fx-font-weight: normal;
-    -fx-text-fill: #cccccc;
+    -fx-font-weight: bold;
+    -fx-text-fill: #d4af37;
 }
 
-/* תוויות של שדות קלט */
 .input-label {
     -fx-font-size: 22px;
-    -fx-text-fill: #cccccc;
+    -fx-text-fill: #d4af37;
     -fx-font-weight: normal;
     -fx-font-family: "Times New Roman";
 }
 
-/* שדות קלט */
 .text-field {
     -fx-background-color: rgba(0, 0, 0, 0.8);
-    -fx-text-fill: #cccccc;
+    -fx-text-fill: #d4af37;
     -fx-font-size: 18px;
-    -fx-border-color: #555555;
+    -fx-border-color: #d4af37;
     -fx-border-radius: 2;
     -fx-background-radius: 2;
     -fx-font-family: "Times New Roman";
 }
 
-/* כפתור "Start" */
 .start-button {
-    -fx-background-color: #666666;
-    -fx-text-fill: #cccccc;
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: #d4af37;
     -fx-font-size: 20px;
-    -fx-font-weight: normal;
+    -fx-font-weight: bold;
     -fx-border-radius: 3;
     -fx-background-radius: 3;
     -fx-padding: 10 24;
     -fx-font-family: "Times New Roman";
 }
 
-/* תיבת סימון */
 .checkbox-label {
-    -fx-text-fill: #cccccc;
+    -fx-text-fill: #d4af37;
     -fx-font-size: 18px;
     -fx-font-weight: normal;
     -fx-font-family: "Times New Roman";
