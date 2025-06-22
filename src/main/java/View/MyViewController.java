@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Controller for the main view - handles all UI interactions
@@ -50,7 +52,9 @@ public class MyViewController implements IView, Initializable {
     private Stage primaryStage;
     private int goalRow;
     private int goalCol;
-
+    // Media players
+    private MediaPlayer backgroundMusicPlayer;
+    private MediaPlayer winSoundPlayer;
     /**
      * Initialize the controller after FXML loading
      */
@@ -60,8 +64,29 @@ public class MyViewController implements IView, Initializable {
         setupKeyboardHandling();
         setupZoomFunctionality();
         updateControlsState();
+        playBackgroundMusic();
     }
-
+    private void playBackgroundMusic() {
+        try {
+            Media media = new Media(getClass().getResource("/backgroundSound/backgroundsound1.mp3").toExternalForm());
+            backgroundMusicPlayer = new MediaPlayer(media);
+            backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            backgroundMusicPlayer.setVolume(0.4);
+            backgroundMusicPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error playing background music: " + e.getMessage());
+        }
+    }
+    private void playWinSound() {
+        try {
+            Media media = new Media(getClass().getResource("/backgroundSound/winSound.wav").toExternalForm());
+            winSoundPlayer = new MediaPlayer(media);
+            winSoundPlayer.setVolume(1.0);
+            winSoundPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error playing win sound: " + e.getMessage());
+        }
+    }
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
@@ -438,8 +463,8 @@ public class MyViewController implements IView, Initializable {
 
             // המטרה - צריך להוסיף property ל-ViewModel
             // או לבדוק במבוך עצמו איפה המטרה
-            goalRow = maze.length - 1;  // זה זמני
-            goalCol = maze[0].length - 1;  // זה זמני
+            goalRow = viewModel.getGoalRow();
+            goalCol = viewModel.getGoalCol();
             mazeDisplayer.setGoalPosition(goalRow, goalCol);
 
             Platform.runLater(() -> {
@@ -479,9 +504,10 @@ public class MyViewController implements IView, Initializable {
 
     @Override
     public void showMazeSolved() {
+        playWinSound(); //
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Congratulations!");
-        alert.setHeaderText("🎉 Maze Solved! 🎉");
+        alert.setHeaderText(" Maze Solved! ");
         alert.setContentText("Excellent work! You've successfully navigated through the maze!");
         alert.showAndWait();
         statusLabel.setText("Maze solved! Generate a new one?");

@@ -67,4 +67,13 @@ public class MyViewModel {
     public ObjectProperty<int[][]> mazeProperty() {
         return maze;
     }
+    public int getGoalRow() {
+        return model.getGoalPosition().getRowIndex();
+    }
+
+    public int getGoalCol() {
+        return model.getGoalPosition().getColumnIndex();
+    }
+
+
 }

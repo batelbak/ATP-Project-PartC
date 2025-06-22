@@ -2,6 +2,7 @@ package Model;
 
 import java.io.File;
 import java.io.IOException;
+import algorithms.mazeGenerators.Position;
 
 public interface IModel {
     void generateMaze(int rows, int cols);
@@ -13,4 +14,5 @@ public interface IModel {
     int[] getCharacterPosition(); // current [row, col] of player
     void moveCharacter(String direction); // "UP", "DOWN", "LEFT", "RIGHT"
     java.util.List<algorithms.search.AState> getSolution(); // for drawing path
+    Position getGoalPosition();
 }

@@ -140,4 +140,8 @@ public class MyModel implements IModel {
     public List<AState> getSolution() {
         return solution != null ? solution.getSolutionPath() : null;
     }
+    @Override
+    public Position getGoalPosition() {
+        return maze != null ? maze.getGoalPosition() : null;
+    }
 }
