@@ -405,20 +405,25 @@ public class MyViewController implements IView, Initializable {
                 "2. Use NumPad keys to move your character:\n" +
                 "   - 2,4,6,8 for basic directions\n" +
                 "   - 1,3,7,9 for diagonal movement\n" +
-                "3. Navigate from start (green) to goal (red)\n" +
-                "4. Use 'Solve Maze' to see the solution\n" +
-                "5. Save/Load mazes using File menu\n\n" +
+                "3. Alternatively, click with the mouse on a nearby cell to move there\n" +
+                "4. Navigate from start (green) to goal (red)\n" +
+                "5. Use 'Solve Maze' to see the solution\n" +
+                "6. Save/Load mazes using File menu\n\n" +
                 "Tips:\n" +
                 "• Diagonal moves require clear L-shaped path\n" +
                 "• Use Ctrl+Scroll to zoom in/out\n" +
                 "• Click on maze area to focus for keyboard input");
     }
 
+
     @FXML
     private void onShowAbout(ActionEvent event) {
         showAlert("Maze Game - Part C\n\n" +
                 "Advanced Topics in Programming\n" +
                 "Ben-Gurion University\n\n" +
+                "This project was developed as part of the course \"Advanced Topics in Programming\".\n" +
+                "Students: Sapir Aharoni and Batel Bakala\n" +
+                "Supervised by the Department of Software and Information Systems Engineering, BGU.\n\n" +
                 "Features:\n" +
                 "• MVVM Architecture Pattern\n" +
                 "• JavaFX GUI with event-driven programming\n" +
@@ -427,9 +432,11 @@ public class MyViewController implements IView, Initializable {
                 "• File I/O for maze persistence\n" +
                 "• Keyboard navigation with NumPad\n" +
                 "• Zoom functionality\n\n" +
-                "Developers: [Your Names]\n" +
-                "Algorithms: MyMazeGenerator, BestFirstSearch");
+                "Algorithms:\n" +
+                "• Maze Generation: MyMazeGenerator\n" +
+                "• Maze Solving: BFS, DFS, BestFirstSearch");
     }
+
 
     @FXML
     private void onExit(ActionEvent event) {

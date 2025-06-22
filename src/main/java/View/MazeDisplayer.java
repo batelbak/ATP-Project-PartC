@@ -67,11 +67,13 @@ public class MazeDisplayer extends Canvas {
                 setupParentListeners();
             }
         });
+        enableMouseDragMovement();
+
     }
 
     public void clearSolutionPath() {
         this.solutionPath = null;
-        this.showSolution = false;  // חשוב מאוד!
+        this.showSolution = false;
         redraw();
     }
     // Rescale canvas when parent size changes
@@ -91,6 +93,31 @@ public class MazeDisplayer extends Canvas {
                 }
             });
         }
+    }
+    // Enables moving character by dragging with mouse
+    public void enableMouseDragMovement() {
+        this.setOnMouseReleased(event -> {
+            if (maze == null) return;
+
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            int targetCol = (int)(mouseX / (cellWidth * zoomFactor));
+            int targetRow = (int)(mouseY / (cellHeight * zoomFactor));
+
+            // בדיקת גבולות
+            if (targetRow < 0 || targetCol < 0 || targetRow >= maze.length || targetCol >= maze[0].length)
+                return;
+
+            // מותר לזוז רק לתא סמוך שאינו קיר
+            int currentRow = characterPosition[0];
+            int currentCol = characterPosition[1];
+            boolean isAdjacent = Math.abs(targetRow - currentRow) + Math.abs(targetCol - currentCol) == 1;
+
+            if (isAdjacent && maze[targetRow][targetCol] == 0) {
+                updateCharacterPosition(targetRow, targetCol);
+            }
+        });
     }
 
     // Load images from resources
