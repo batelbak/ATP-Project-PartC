@@ -79,7 +79,7 @@ public class MyViewController implements IView, Initializable {
     }
     private void playWinSound() {
         try {
-            Media media = new Media(getClass().getResource("/backgroundSound/winSound.wav").toExternalForm());
+            Media media = new Media(getClass().getResource("/backgroundSound/WinSound.wav").toExternalForm());
             winSoundPlayer = new MediaPlayer(media);
             winSoundPlayer.setVolume(1.0);
             winSoundPlayer.play();
