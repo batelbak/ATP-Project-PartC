@@ -1,4 +1,6 @@
-/* רקע כללי */
+/* === Maze Game - Intro Screen Styles === */
+
+/* Background for the intro pane */
 #introPane {
     -fx-background-image: url("/images/mazeBackground.png");
     -fx-background-size: cover;
@@ -6,49 +8,49 @@
     -fx-background-repeat: no-repeat;
 }
 
-/* כותרת ראשית (Label הראשי עם המשפט הדרמטי) */
+/* Main title label  */
 #mainTitle {
     -fx-font-family: "Times New Roman";
-    -fx-font-size: 38px;  /* הגדלתי מ-32 ל-38 */
+    -fx-font-size: 38px;
     -fx-font-weight: normal;
     -fx-text-fill: #cccccc;
 }
 
-/* תוויות של שדות קלט */
+/* Labels for input fields */
 .input-label {
-    -fx-font-size: 22px;  /* הגדלתי מ-18 ל-22 */
+    -fx-font-size: 22px;
     -fx-text-fill: #cccccc;
     -fx-font-weight: normal;
     -fx-font-family: "Times New Roman";
 }
 
-/* שדות קלט (TextField) */
+/* TextField styling for user input */
 .text-field {
     -fx-background-color: rgba(0, 0, 0, 0.8);
     -fx-text-fill: #cccccc;
-    -fx-font-size: 18px;  /* הגדלתי מ-16 ל-18 */
+    -fx-font-size: 18px;
     -fx-border-color: #555555;
     -fx-border-radius: 2;
     -fx-background-radius: 2;
     -fx-font-family: "Times New Roman";
 }
 
-/* כפתור "Start" */
+/* Style for the "Start" button */
 .start-button {
     -fx-background-color: #666666;
     -fx-text-fill: #cccccc;
-    -fx-font-size: 20px;  /* הגדלתי מ-18 ל-20 */
+    -fx-font-size: 20px;
     -fx-font-weight: normal;
     -fx-border-radius: 3;
     -fx-background-radius: 3;
-    -fx-padding: 10 24;  /* הגדלתי הpadding עוד */
+    -fx-padding: 10 24;
     -fx-font-family: "Times New Roman";
 }
 
-/* תיבת סימון "Show Solution" */
+/* Label next to the "Show Solution" checkbox */
 .checkbox-label {
     -fx-text-fill: #cccccc;
-    -fx-font-size: 18px;  /* הגדלתי מ-16 ל-18 */
+    -fx-font-size: 18px;
     -fx-font-weight: normal;
     -fx-font-family: "Times New Roman";
 }

@@ -8,7 +8,7 @@
     -fx-text-fill: #d4af37; /* זהב */
 }
 
-/* רקע המשחק */
+/* === Main Game Pane Background === */
 #mainPane {
     -fx-background-image: url("/images/MazeBackground2.png");
     -fx-background-size: cover;
@@ -16,7 +16,7 @@
     -fx-background-repeat: no-repeat;
 }
 
-/* ScrollPane שקוף */
+/* ScrollPane  */
 #mazeScrollPane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -85,7 +85,7 @@
     -fx-font-size: 14px;
 }
 
-/* מסך פתיחה */
+/*  === Intro Screen Styling ===  */
 #introPane {
     -fx-background-image: url("/images/mazeBackground.png");
     -fx-background-size: cover;

@@ -18,11 +18,6 @@ public interface IView {
      */
     void updateCharacterPosition(int row, int col);
     /**
-     * Display solution path on the maze
-     * @param solutionPath array of positions representing the solution
-     */
-    void displaySolution(java.util.List<algorithms.search.AState> solutionPath);
-    /**
      * Show alert/error message to user
      * @param message the message to display
      */
@@ -31,11 +26,6 @@ public interface IView {
      * Show success message when maze is solved
      */
     void showMazeSolved();
-    /**
-     * Enable/disable UI controls
-     * @param enabled true to enable, false to disable
-     */
-    void setControlsEnabled(boolean enabled);
     /**
      * Get maze dimensions from user input
      * @return array with [rows, columns] or null if cancelled

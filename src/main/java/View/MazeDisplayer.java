@@ -94,7 +94,7 @@ public class MazeDisplayer extends Canvas {
             });
         }
     }
-    // Enables moving character by dragging with mouse
+    // Enables moving the character by clicking and dragging the mouse
     public void enableMouseDragMovement() {
         this.setOnMouseReleased(event -> {
             if (maze == null) return;
@@ -102,14 +102,16 @@ public class MazeDisplayer extends Canvas {
             double mouseX = event.getX();
             double mouseY = event.getY();
 
+            // Calculate the cell coordinates based on mouse position and zoom
             int targetCol = (int)(mouseX / (cellWidth * zoomFactor));
             int targetRow = (int)(mouseY / (cellHeight * zoomFactor));
 
-            // בדיקת גבולות
-            if (targetRow < 0 || targetCol < 0 || targetRow >= maze.length || targetCol >= maze[0].length)
+            // Boundary check: make sure the target is inside the maze
+            if (targetRow < 0 || targetCol < 0 ||
+                    targetRow >= maze.length || targetCol >= maze[0].length)
                 return;
 
-            // מותר לזוז רק לתא סמוך שאינו קיר
+            // Allow movement only to an adjacent cell that is not a wall
             int currentRow = characterPosition[0];
             int currentCol = characterPosition[1];
             boolean isAdjacent = Math.abs(targetRow - currentRow) + Math.abs(targetCol - currentCol) == 1;
@@ -119,6 +121,7 @@ public class MazeDisplayer extends Canvas {
             }
         });
     }
+
 
     // Load images from resources
     private void loadImages() {
@@ -192,12 +195,19 @@ public class MazeDisplayer extends Canvas {
 
     // Win condition check
     private void checkWinCondition() {
+        System.out.println("Checking win: char=(" + characterPosition[0] + "," + characterPosition[1] +
+                ") goal=(" + goalPosition[0] + "," + goalPosition[1] + ")");
+
         if (characterPosition[0] == goalPosition[0] && characterPosition[1] == goalPosition[1]) {
+            System.out.println("===> WIN DETECTED!");
             if (onWinCallback != null) {
                 onWinCallback.run();
+            } else {
+                System.out.println("onWinCallback is null!");
             }
         }
     }
+
 
     public void setOnWinCallback(Runnable callback) {
         this.onWinCallback = callback;
@@ -206,18 +216,6 @@ public class MazeDisplayer extends Canvas {
     public void setGoalPosition(int row, int col) {
         this.goalPosition[0] = row;
         this.goalPosition[1] = col;
-        redraw();
-    }
-
-    // Accept and display solution
-    public void displaySolution(Solution solution) {
-        this.solution = solution;
-        if (solution != null) {
-            this.solutionPath = solution.getSolutionPath();
-            this.showSolution = true;
-        } else {
-            this.showSolution = false;
-        }
         redraw();
     }
 
@@ -330,10 +328,9 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-    // Draw solution path as yellow dots or image
-    // Draw solution path as yellow dots or image
-    // Draw solution path as yellow dots or image
+    // Draws the solution path on the maze using yellow dots or a custom image
     private void drawSolutionPath(GraphicsContext gc, double cellWidth, double cellHeight) {
+        // Set the fill color to semi-transparent yellow
         gc.setFill(Color.YELLOW.deriveColor(0, 1, 1, 0.8));
 
         for (int i = 0; i < solutionPath.size(); i++) {
@@ -341,32 +338,36 @@ public class MazeDisplayer extends Canvas {
             if (state == null) continue;
 
             try {
-                // נניח ש-AState הוא MazeState עם פונקציה getPosition()
+                // Assume that AState is a MazeState and has a getPosition() method via reflection
                 algorithms.mazeGenerators.Position pos =
                         (algorithms.mazeGenerators.Position) state.getClass().getMethod("getPosition").invoke(state);
 
                 int row = pos.getRowIndex();
                 int col = pos.getColumnIndex();
 
-                // בדיקה שהמיקום חוקי ולא על קיר
-                if (row >= 0 && row < maze.length && col >= 0 && col < maze[0].length && maze[row][col] == 0) {
+                // Ensure the position is within bounds and not a wall
+                if (row >= 0 && row < maze.length &&
+                        col >= 0 && col < maze[0].length &&
+                        maze[row][col] == 0) {
 
-                    // אל תציג כדור על נקודת ההתחלה (הדמות האדומה)
+                    // Skip drawing on the starting position (red character)
                     boolean isStartPosition = (row == characterPosition[0] && col == characterPosition[1]);
 
-                    // אל תציג כדור על נקודת המטרה (המטרה הירוקה)
+                    // Skip drawing on the goal position (green target)
                     boolean isGoalPosition = (row == goalPosition[0] && col == goalPosition[1]);
 
-                    // צייר רק אם זה לא נקודת התחלה ולא מטרה
+                    // Only draw if the cell is part of the path but not start or goal
                     if (!isStartPosition && !isGoalPosition) {
                         double x = col * cellWidth;
                         double y = row * cellHeight;
 
                         if (solutionImage != null) {
+                            // Draw the provided solution image (e.g., yellow ball)
                             gc.drawImage(solutionImage, x, y, cellWidth, cellHeight);
                         } else {
-                            // צייר כדור צהוב קטן יותר
-                            gc.fillOval(x + cellWidth * 0.25, y + cellHeight * 0.25, cellWidth * 0.5, cellHeight * 0.5);
+                            // Draw a small yellow dot (circle) at the center of the cell
+                            gc.fillOval(x + cellWidth * 0.25, y + cellHeight * 0.25,
+                                    cellWidth * 0.5, cellHeight * 0.5);
                         }
                     }
                 }
@@ -376,7 +377,6 @@ public class MazeDisplayer extends Canvas {
             }
         }
     }
-
 
 
     // Draw goal cell
@@ -405,11 +405,4 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-    // Public getters
-    public double getCellWidth() { return cellWidth; }
-    public double getCellHeight() { return cellHeight; }
-    public double getZoomFactor() { return zoomFactor; }
-    public boolean isShowingSolution() { return showSolution; }
-    public int[] getCharacterPosition() { return characterPosition.clone(); }
-    public int[] getGoalPosition() { return goalPosition.clone(); }
 }

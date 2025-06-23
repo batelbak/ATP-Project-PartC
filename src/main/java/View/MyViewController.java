@@ -6,10 +6,15 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
@@ -20,7 +25,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 /**
  * Controller for the main view - handles all UI interactions
  * Implements full MVVM pattern with proper separation of concerns
@@ -33,14 +39,7 @@ public class MyViewController implements IView, Initializable {
     @FXML private Button generateMazeButton;
     @FXML private Button solveMazeButton;
     @FXML private Label statusLabel;
-    @FXML private CheckBox showSolutionCheckBox; // הוספתי את זה
     @FXML private MenuItem saveMazeMenuItem;
-    @FXML private MenuItem loadMazeMenuItem;
-    @FXML private MenuItem newMazeMenuItem;
-    @FXML private MenuItem propertiesMenuItem;
-    @FXML private MenuItem exitMenuItem;
-    @FXML private MenuItem helpMenuItem;
-    @FXML private MenuItem aboutMenuItem;
 
     // Reference to ViewModel (MVVM pattern)
     private MyViewModel viewModel;
@@ -156,12 +155,10 @@ public class MyViewController implements IView, Initializable {
      */
     private void handleKeyPressed(KeyEvent event) {
         System.out.println("Key pressed: " + event.getCode() + ", mazeGenerated: " + mazeGenerated);
-
         if (!mazeGenerated || viewModel == null) {
             System.out.println("Cannot move - maze not generated or viewModel null");
             return;
         }
-
         String direction = null;
 
         switch (event.getCode()) {
@@ -257,8 +254,14 @@ public class MyViewController implements IView, Initializable {
         }
     }
 
+
     // =================== FXML Event Handlers ===================
 
+    /**
+     * Handles the "Generate Maze" button click.
+     * Retrieves dimensions from input, generates the maze via ViewModel,
+     * sets status, and enables keyboard focus for navigation.
+     */
     @FXML
     private void onGenerateMaze(ActionEvent event) {
         int[] dimensions = getMazeDimensions();
@@ -271,7 +274,6 @@ public class MyViewController implements IView, Initializable {
                 mazeGenerated = true;
                 statusLabel.setText("Maze generated! Use NumPad keys to navigate (2,4,6,8 + diagonals 1,3,7,9)");
 
-                // Focus on maze for keyboard input
                 Platform.runLater(() -> {
                     mazeDisplayer.setFocusTraversable(true);
                     mazeDisplayer.requestFocus();
@@ -287,6 +289,10 @@ public class MyViewController implements IView, Initializable {
         }
     }
 
+    /**
+     * Handles the "Solve Maze" button click.
+     * Triggers the ViewModel to solve the maze and updates status accordingly.
+     */
     @FXML
     private void onSolveMaze(ActionEvent event) {
         if (viewModel != null && mazeGenerated) {
@@ -295,7 +301,6 @@ public class MyViewController implements IView, Initializable {
                 viewModel.solveMaze();
                 List<AState> solution = viewModel.getSolution();
                 if (solution != null && !solution.isEmpty()) {
-                    // רק שומר את הפתרון, לא מציג אותו אוטומטית
                     statusLabel.setText("Solution found! " + solution.size() + " steps. Check the box to show it.");
                 } else {
                     showAlert("No solution found for this maze!");
@@ -306,6 +311,11 @@ public class MyViewController implements IView, Initializable {
         }
     }
 
+    /**
+     * Handles the checkbox toggle for displaying the maze solution.
+     * If a solution exists and the checkbox is selected, it will display the solution.
+     * Otherwise, it hides it. If no solution is available, shows an alert.
+     */
     @FXML
     private void onToggleSolutionDisplay(ActionEvent event) {
         CheckBox checkBox = (CheckBox) event.getSource();
@@ -313,48 +323,53 @@ public class MyViewController implements IView, Initializable {
 
         if (viewModel != null && mazeGenerated) {
             List<AState> solution = viewModel.getSolution();
+
             if (solution != null && !solution.isEmpty()) {
                 if (show) {
-                    // הוסף הדפסה לבדיקה
-                    System.out.println("Solution path size: " + solution.size());
-                    for (int i = 0; i < solution.size(); i++) {
-                        try {
-                            algorithms.mazeGenerators.Position pos =
-                                    (algorithms.mazeGenerators.Position) solution.get(i).getClass().getMethod("getPosition").invoke(solution.get(i));
-                            System.out.println("Step " + i + ": (" + pos.getRowIndex() + ", " + pos.getColumnIndex() + ")");
-                        } catch (Exception e) {
-                            System.out.println("Error reading position for step " + i);
-                        }
-                    }
-
+                    // Display the solution path on the maze
                     mazeDisplayer.displaySolutionPath(solution);
                     statusLabel.setText("Solution displayed (" + solution.size() + " steps)");
                 } else {
+                    // Clear the solution path from the maze
                     mazeDisplayer.clearSolutionPath();
                     statusLabel.setText("Solution hidden");
                 }
             } else {
+                // No solution available – notify the user
                 showAlert("No solution found yet. Press 'Solve' first.");
                 checkBox.setSelected(false);
             }
         }
     }
 
+
+    /**
+     * Handles the creation of a new maze.
+     * Delegates to the same method used for generating a maze from scratch.
+     */
     @FXML
     private void onNewMaze(ActionEvent event) {
         onGenerateMaze(event);
     }
 
+    /**
+     * Handles saving the current maze to a file.
+     * Prompts the user with a file chooser dialog and saves the maze if possible.
+     */
     @FXML
     private void onSaveMaze(ActionEvent event) {
+        // Prevent saving if no maze has been generated yet
         if (!mazeGenerated) {
             showAlert("No maze to save! Generate a maze first.");
             return;
         }
 
+        // Open a save dialog and retrieve the file path
         String filePath = showSaveFileDialog();
+
         if (filePath != null && viewModel != null) {
             try {
+                // Delegate save operation to ViewModel
                 viewModel.saveMaze(new File(filePath));
                 statusLabel.setText("Maze saved successfully!");
                 showAlert("Maze saved to: " + filePath);
@@ -364,15 +379,24 @@ public class MyViewController implements IView, Initializable {
         }
     }
 
+    /**
+     * Handles loading a maze from a file.
+     * Prompts the user with a file chooser dialog and loads the maze into the UI.
+     */
     @FXML
     private void onLoadMaze(ActionEvent event) {
+        // Open a load dialog and retrieve the file path
         String filePath = showLoadFileDialog();
+
         if (filePath != null && viewModel != null) {
             try {
+                // Delegate load operation to ViewModel
                 viewModel.loadMaze(new File(filePath));
                 mazeGenerated = true;
                 statusLabel.setText("Maze loaded successfully!");
                 updateControlsState();
+
+                // Focus the maze canvas for keyboard interaction
                 Platform.runLater(() -> {
                     mazeDisplayer.setFocusTraversable(true);
                     mazeDisplayer.requestFocus();
@@ -382,6 +406,7 @@ public class MyViewController implements IView, Initializable {
             }
         }
     }
+
 
     @FXML
     private void onShowProperties(ActionEvent event) {
@@ -443,16 +468,6 @@ public class MyViewController implements IView, Initializable {
         Platform.exit();
     }
 
-    // Simple button click for testing
-    @FXML
-    public void onButtonClicked(ActionEvent event) {
-        if (viewModel != null) {
-            onGenerateMaze(event);
-        } else {
-            showAlert("ViewModel not connected! Check your setup.");
-        }
-    }
-
     // =================== IView Implementation ===================
 
     @Override
@@ -463,13 +478,9 @@ public class MyViewController implements IView, Initializable {
         if (mazeDisplayer != null) {
             mazeDisplayer.displayMaze(maze);
 
-            // במקום להגדיר קשיח (0,0), קבל מה-ViewModel:
             characterPosition[0] = viewModel.playerRowProperty().get();
             characterPosition[1] = viewModel.playerColProperty().get();
             mazeDisplayer.updateCharacterPosition(characterPosition[0], characterPosition[1]);
-
-            // המטרה - צריך להוסיף property ל-ViewModel
-            // או לבדוק במבוך עצמו איפה המטרה
             goalRow = viewModel.getGoalRow();
             goalCol = viewModel.getGoalCol();
             mazeDisplayer.setGoalPosition(goalRow, goalCol);
@@ -491,15 +502,6 @@ public class MyViewController implements IView, Initializable {
         characterPosition[0] = row;
         characterPosition[1] = col;
     }
-
-    @Override
-    public void displaySolution(List<AState> solutionPath) {
-        if (mazeDisplayer != null && solutionPath != null) {
-            // Pass the solution directly to the displayer
-            mazeDisplayer.displaySolutionPath(solutionPath);
-        }
-    }
-
     @Override
     public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -511,21 +513,70 @@ public class MyViewController implements IView, Initializable {
 
     @Override
     public void showMazeSolved() {
-        playWinSound(); //
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Congratulations!");
-        alert.setHeaderText(" Maze Solved! ");
-        alert.setContentText("Excellent work! You've successfully navigated through the maze!");
-        alert.showAndWait();
-        statusLabel.setText("Maze solved! Generate a new one?");
+        System.out.println("===> showMazeSolved() called!");
+
+        playWinSound();
+        Image explosionImage = new Image(getClass().getResourceAsStream("/images/explosion_clean.png"));
+        ImageView imageView = new ImageView(explosionImage);
+        imageView.setFitWidth(600.0);
+        imageView.setFitHeight(600.0);
+        imageView.setPreserveRatio(false);
+
+        Button playAgainBtn = new Button("Play Again");
+        playAgainBtn.setStyle(
+                "-fx-font-size: 20px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-color: transparent; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-border-color: gold; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-padding: 10px;"
+        );
+
+        playAgainBtn.setOnMouseEntered(e -> playAgainBtn.setStyle(
+                "-fx-font-size: 20px; -fx-font-weight: bold; " +
+                        "-fx-background-color: gold; -fx-text-fill: black; " +
+                        "-fx-border-color: gold; -fx-border-width: 2px; -fx-padding: 10px;"
+        ));
+        playAgainBtn.setOnMouseExited(e -> playAgainBtn.setStyle(
+                "-fx-font-size: 20px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-background-color: transparent; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-border-color: gold; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-padding: 10px;"
+        ));
+
+        playAgainBtn.setOnAction(e -> {
+            System.out.println("===> Play again clicked");
+            Node rootNode = generateMazeButton.getScene().getRoot();
+            if (rootNode instanceof StackPane stackPane) {
+                stackPane.getChildren().removeIf(node -> "winPane".equals(node.getId()));
+            }
+            onGenerateMaze(new ActionEvent());
+        });
+
+        VBox overlayBox = new VBox(playAgainBtn);
+        overlayBox.setAlignment(Pos.BOTTOM_CENTER);
+        overlayBox.setPadding(new Insets(0, 0, 80, 0)); // מרווח מהתחתית של התמונה
+        overlayBox.setMouseTransparent(false); // הכרחי לאינטראקציה עם הכפתור
+
+        StackPane winPane = new StackPane(imageView, overlayBox);
+        winPane.setId("winPane");
+
+        Scene scene = generateMazeButton.getScene();
+        Node rootNode = scene.getRoot();
+
+        if (rootNode instanceof StackPane stackPane) {
+            stackPane.getChildren().add(winPane);
+        } else {
+            StackPane newRoot = new StackPane();
+            newRoot.getChildren().addAll(rootNode, winPane);
+            scene.setRoot(newRoot);
+        }
     }
 
-    @Override
-    public void setControlsEnabled(boolean enabled) {
-        if (generateMazeButton != null) generateMazeButton.setDisable(!enabled);
-        if (solveMazeButton != null) solveMazeButton.setDisable(!enabled || !mazeGenerated);
-        if (saveMazeMenuItem != null) saveMazeMenuItem.setDisable(!mazeGenerated);
-    }
 
     @Override
     public int[] getMazeDimensions() {
@@ -650,11 +701,8 @@ public class MyViewController implements IView, Initializable {
         });
 
         if (mazeDisplayer != null) {
-            mazeDisplayer.setOnWinCallback(() -> {
-                Platform.runLater(() -> {
-                    showMazeSolved();
-                });
-            });
+            mazeDisplayer.setOnWinCallback(() -> Platform.runLater(this::showMazeSolved));
         }
+
     }
 }

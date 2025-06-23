@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Model.IModel;
 import Model.MyModel;
-import ViewModel.MyViewModel;
 
 import java.io.IOException;
 import java.util.Objects;
