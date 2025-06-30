@@ -22,6 +22,9 @@ public class MainApplication extends Application {
 
         Scene introScene = new Scene(introRoot, 1000, 700);
         stage.setTitle("Maze Application - Welcome");
+        stage.setResizable(true);
+        stage.setMinWidth(600);
+        stage.setMinHeight(500);
         stage.setScene(introScene);
         stage.show();
     }

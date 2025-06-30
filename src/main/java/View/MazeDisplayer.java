@@ -242,6 +242,7 @@ public class MazeDisplayer extends Canvas {
             }
 
             if (oldZoom != zoomFactor) {
+                updateCanvasSize();
                 redraw();
             }
 
