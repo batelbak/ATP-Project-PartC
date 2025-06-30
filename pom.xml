@@ -52,11 +52,12 @@
         <!-- ATP Project PartB (Local Repository) -->
         <dependency>
             <groupId>com.atp</groupId>
-            <artifactId>ATP-Project-PartB</artifactId>
+            <artifactId>demo</artifactId>
             <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}\src\main\resources\ATPProjectJAR\ATP-Project-PartB.jar</systemPath>
         </dependency>
     </dependencies>
-
     <build>
         <resources>
             <resource>
